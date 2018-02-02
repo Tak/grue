@@ -10,7 +10,6 @@
 # General Public License for more details.
 
 require_relative 'fixedqueue'
-require_relative 'cicphash'
 
 require 'uri'
 
