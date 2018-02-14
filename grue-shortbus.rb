@@ -30,6 +30,7 @@ class GrueShortBus < ShortBus
     @ACTION = /^\001ACTION(.*)\001/
 
     @grue = Grue.new()
+    @grue.load()
     @channels = []
     @hooks = []
     hook_command( 'GRUE', XCHAT_PRI_NORM, method( :enable), '')
@@ -85,6 +86,7 @@ class GrueShortBus < ShortBus
       else
         @hooks.each{ |hook| unhook(hook) }
         @hooks = []
+        dump(nil, nil, nil)
         puts('Grue disabled.')
       end
     rescue
@@ -94,20 +96,9 @@ class GrueShortBus < ShortBus
     return XCHAT_EAT_ALL
   end # disable
 
-  # Dumps the last 10 messages for words[1] (nick|channel)
-  # and messages them to words[2]
+  # Dumps the url cache to disk
   def dump(words, words_eol, data)
-    puts 'TODO'
-    # TODO
-    # begin
-    #   words.shift()
-    #   if (words && 2 == words.size)
-    #     @reeval.dump(words[0]).each{ |line|
-    #       if (line) then command("MSG #{words[1]} #{line}"); end
-    #     }
-    #   end
-    # rescue
-    # end
+    @grue.dump()
   end # dump
 
   # Check for disconnect notice

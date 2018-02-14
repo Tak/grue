@@ -12,10 +12,14 @@
 require_relative 'fixedqueue'
 
 require 'uri'
+require 'psych'
 
 URIRE = /https?:\/\/[^\s]+/
 URLS_PER_CHANNEL = 100000 # ?
+CACHE = "#{ENV['HOME']}/.grue.yaml".freeze
 
+# Manages a url database and reports repetitions
+# Because hell is repetition
 class Grue
   def initialize()
     @urls = {}
@@ -37,6 +41,28 @@ class Grue
     @urls[channel] = FixedQueue.new(URLS_PER_CHANNEL) unless @urls[channel]
     puts "Adding url #{url} for channel #{channel}"
     @urls[channel].push([url, nick, time])
+  end
+
+  # Load the url database from CACHE
+  def load()
+    begin
+      @urls = Psych.load_file(CACHE)
+      puts "Loaded cache from #{CACHE}"
+    rescue => error
+      puts "Error loading #{CACHE}: #{error.to_s}"
+    end
+  end
+
+  # Dump the url database to CACHE
+  def dump()
+    begin
+      File.open(CACHE, 'w') { |file|
+        file.write(Psych.dump(@urls))
+      }
+      puts "Successfully dumped urls to #{CACHE}"
+    rescue => error
+      puts "Error dumping urls: #{error.to_s}"
+    end
   end
 
   def self.get_first_url(message)
