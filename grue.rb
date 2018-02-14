@@ -25,6 +25,11 @@ class Grue
     @urls = {}
   end
 
+  # Processes a statement
+  # param channel The channel in which the statement was made
+  # param nick The nick making the statement
+  # param text The text of the statement
+  # returns The entries with a matching URL (including this statement), or nil
   def process_statement(channel, nick, text)
     return nil unless (url = Grue.get_first_url(text))
 
@@ -37,6 +42,11 @@ class Grue
     }
   end
 
+  # Records a url
+  # param channel The channel in which the url was observed
+  # param nick The nick sending the url
+  # param url The url
+  # param time The time the url was observed
   def record_url(channel, nick, url, time)
     @urls[channel] = FixedQueue.new(URLS_PER_CHANNEL) unless @urls[channel]
     puts "Adding url #{url} for channel #{channel}"
@@ -65,6 +75,9 @@ class Grue
     end
   end
 
+  # Gets the first http[s] url from a string
+  # param message The string to be searched
+  # returns The first url, or nil
   def self.get_first_url(message)
     if (match = URIRE.match(message))
       uri = URI.parse(match.to_s())
