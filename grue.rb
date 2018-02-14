@@ -37,6 +37,7 @@ class Grue
     record_url(channel, nick, url, Time.now)
 
     # url, nick, datetime
+    # TODO: more efficiently searchable data structure
     return @urls[channel].select { |chunk|
       chunk && chunk[0].casecmp(url).zero?
     }
@@ -77,13 +78,23 @@ class Grue
 
   # Gets the first http[s] url from a string
   # param message The string to be searched
-  # returns The first url, or nil
+  # returns The first url (sanitized), or nil
   def self.get_first_url(message)
-    if (match = URIRE.match(message))
-      uri = URI.parse(match.to_s())
-      return (uri && (uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS))) ? match.to_s() : nil
-    end
-    return nil
+    return nil unless (match = URIRE.match(message))
+
+    uri = URI.parse(match.to_s())
+    return nil unless (uri && (uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)))
+
+    # Probably suboptimal performance
+    sanitized = "#{uri.host}#{uri.path}"
+    sanitized.gsub!(/\/amp(\/)?/, '\1') # fuck amp
+    sanitized.gsub!(/\/$/, '') # strip trailing slash for consistency between posters
+    return sanitized unless uri.query
+
+    query = uri.query
+    query.gsub!(/&?utm_[\w]+=[^&]*/, '') # utm_whatever is irrelevant
+    query.gsub!(/&?(aqs|sourceid|ie|redirect_source)=[^&]*/, '') # don't care about these either
+    return uri.query.empty? ? sanitized : "#{sanitized}?#{query}"
   end # get_first_url
 end # Grue
 
@@ -97,17 +108,17 @@ if (__FILE__ == $0)
 
     def test_uri_validation
       uris = [
-        [ 'http://google.com', 'http://google.com' ],
-        [ 'https://google.com', 'https://google.com' ],
+        [ 'http://google.com', 'google.com' ],
+        [ 'https://google.com/', 'google.com' ],
         [ 'htp://google.com', nil ],
         [ 'ftp://google.com', nil ],
-        [ 'I would like you to see http://google.com', 'http://google.com' ],
-        [ 'I would like you to see https://google.com', 'https://google.com' ],
+        [ 'I would like you to see http://google.com', 'google.com' ],
+        [ 'I would like you to see https://google.com', 'google.com' ],
         [ 'I would like you to see htp://google.com', nil ],
         [ 'I would like you to see ftp://google.com', nil ],
-        [ 'htp://google.com https://google.com ttp://google.com', 'https://google.com' ],
-        [ 'htp://google.com http://google.com ttps://google.com', 'http://google.com' ],
-        [ 'https://www.google.dk/search?q=foo+bar+baz&oq=foo+bar+baz&aqs=chrome..69i57j0l5.1283j0j7&sourceid=chrome&ie=UTF-8', 'https://www.google.dk/search?q=foo+bar+baz&oq=foo+bar+baz&aqs=chrome..69i57j0l5.1283j0j7&sourceid=chrome&ie=UTF-8' ],
+        [ 'htp://google.com https://google.com ttp://google.com', 'google.com' ],
+        [ 'htp://google.com http://google.com/amp?redirect_source=google.com', 'google.com' ],
+        [ 'https://www.google.dk/amp/search/amp?q=foo+bar+baz&oq=foo+bar+baz&aqs=chrome..69i57j0l5.1283j0j7&sourceid=chrome&ie=UTF-8&utm_source=meh', 'www.google.dk/search?q=foo+bar+baz&oq=foo+bar+baz' ],
       ]
 
       uris.each { |pair|
@@ -122,7 +133,7 @@ if (__FILE__ == $0)
         [ 'Tak', 'https://foo.bar', 1],
         [ 'Tak', 'meh', 0],
         [ 'wat', 'https://foo.bar', 2],
-        [ 'wat', 'http://foo.bar', 1],
+        [ 'wat', 'http://foo.bar', 3],
       ]
 
       statements.each { |thing|
