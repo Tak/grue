@@ -236,14 +236,25 @@ class GrueShortBus < ShortBus
   # * results are the results of the lookup
   def output_shame(channel, nick, results)
     originick = results[0][1]
-    duration = Duration.new(Time.now - results[0][2]).format("%td %~d %h %~h %m %~m %s %~s")
+    duration = Duration.new(Time.now - results[0][2])
+    durationFormat = ''
+
+    if (duration.days > 0)
+      durationFormat += '%td %~d '
+    elsif (duration.hours > 0)
+      durationFormat += '%h %~h '
+    elsif (duration.minutes > 0)
+      durationFormat += '%m %~m '
+    end
+    durationFormat += '%s %~s'
+    durationText = duration.format(durationFormat)
     duplicates = results.size - 2
     sometext = ''
 
-    if (originick.casecmp(nick).zero?)
-      sometext = "#{nick} just grued its own link from #{duration} ago!"
+    sometext = if (originick.casecmp(nick).zero?)
+      "#{nick} just grued its own link from #{durationText} ago!"
     else
-      sometext = "#{nick} just grued #{originick}'s link from #{duration} ago!"
+      "#{nick} just grued #{originick}'s link from #{durationText} ago!"
     end
     if (duplicates > 0)
       sometext += " (#{duplicates} duplicates)"
