@@ -11,8 +11,6 @@
 require_relative 'shortbus'
 require_relative 'grue'
 
-require 'ruby-duration'
-
 # Regular expression to match an irc nick pattern (:nick[!user@host])
 # and capture the nick portion in \1
 NICKRE = /^:([^!]*)!.*/
@@ -236,18 +234,7 @@ class GrueShortBus < ShortBus
   # * results are the results of the lookup
   def output_shame(channel, nick, results)
     originick = results[0][1]
-    duration = Duration.new(Time.now - results[0][2])
-    durationFormat = ''
-
-    if (duration.days > 0)
-      durationFormat += '%td %~d '
-    elsif (duration.hours > 0)
-      durationFormat += '%h %~h '
-    elsif (duration.minutes > 0)
-      durationFormat += '%m %~m '
-    end
-    durationFormat += '%s %~s'
-    durationText = duration.format(durationFormat)
+    durationText = Grue.pretty_print_duration_difference(results[0][2], Time.now)
     duplicates = results.size - 2
     sometext = ''
 

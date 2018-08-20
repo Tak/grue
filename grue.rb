@@ -14,6 +14,7 @@ require_relative 'urika'
 
 require 'uri'
 require 'psych'
+require 'ruby-duration'
 
 URLS_PER_CHANNEL = 100000 # ?
 CACHE = "#{ENV['HOME']}/.grue.yaml".freeze
@@ -75,6 +76,18 @@ class Grue
       puts "Error dumping urls: #{error.to_s}"
     end
   end
+
+  def self.pretty_print_duration_difference(first, last)
+    duration = Duration.new(last - first)
+
+    durationFormat = ''
+    durationFormat += '%td %~d ' if (duration.days > 0)
+    durationFormat += '%h %~h ' if (duration.hours > 0)
+    durationFormat += '%m %~m ' if (duration.minutes > 0)
+    durationFormat += '%s %~s'
+
+    return duration.format(durationFormat)
+  end
 end # Grue
 
 if (__FILE__ == $0)
@@ -103,6 +116,29 @@ if (__FILE__ == $0)
           # p result
           assert_equal(thing[2], result.size, "Unexpected match count #{result.size} for input #{thing[1]}")
         end
+      }
+    end
+
+    def test_duration_print
+      origin = Time.new(2017, 04, 06, 11, 17)
+
+      offsets = [
+          [origin + 1, '1 second'],
+          [origin + 60, '1 minute 0 seconds'],
+          [origin + 61, '1 minute 1 second'],
+          [origin + 3600, '1 hour 0 seconds'],
+          [origin + 3601, '1 hour 1 second'],
+          [origin + 3660, '1 hour 1 minute 0 seconds'],
+          [origin + 3661, '1 hour 1 minute 1 second'],
+          [origin + 86400, '1 day 0 seconds'],
+          [origin + 86401, '1 day 1 second'],
+          [origin + 86461, '1 day 1 minute 1 second'],
+          [origin + 90001, '1 day 1 hour 1 second'],
+          [origin + 90061, '1 day 1 hour 1 minute 1 second'],
+      ]
+
+      offsets.each{ |offset|
+        assert_equal(offset[1], Grue.pretty_print_duration_difference(origin, offset[0]))
       }
     end
   end
