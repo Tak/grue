@@ -234,7 +234,7 @@ module Grue
     # * results are the results of the lookup
     def output_shame(channel, nick, results)
       originick = results[0][1]
-      durationText = Grue.pretty_print_duration_difference(results[0][2], Time.now)
+      durationText = ::Grue.pretty_print_duration_difference(results[0][2], Time.now)
       duplicates = results.size - 2
       sometext = ''
 
