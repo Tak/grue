@@ -223,7 +223,7 @@ module Grue
           output_shame(channel, nick, response)
         end
       rescue
-        # puts("#{caller.first}: #{$!}")
+        puts("#{caller.first}: #{$!}")
       end
 
       return ShortBus::XCHAT_EAT_NONE
