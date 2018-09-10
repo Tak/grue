@@ -257,8 +257,3 @@ module Grue
     end # ellipsize
   end # GrueShortBus
 end # Grue
-
-if (__FILE__ == $0)
-  blah = GrueShortBus.new()
-  blah.run()
-end
