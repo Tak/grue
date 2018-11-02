@@ -35,17 +35,22 @@ RSpec.describe Grue do
 
     offsets = [
         [origin + 1, '1 second'],
+        [origin + 2, '2 seconds'],
+        [origin + 11, '11 seconds'],
         [origin + 60, '1 minute'],
         [origin + 61, '1 minute'],
+        [origin + 121, '2 minutes'],
         [origin + 3600, '1 hour'],
         [origin + 3601, '1 hour'],
         [origin + 3660, '1 hour'],
         [origin + 3661, '1 hour'],
+        [origin + 7200, '2 hours'],
         [origin + 86400, '1 day'],
         [origin + 86401, '1 day'],
         [origin + 86461, '1 day'],
         [origin + 90001, '1 day'],
         [origin + 90061, '1 day'],
+        [origin + 172800, '2 days'],
     ]
 
     offsets.each{ |offset|
