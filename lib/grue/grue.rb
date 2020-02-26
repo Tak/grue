@@ -25,7 +25,7 @@ module Grue
   def self.pretty_print_duration_difference(first, last)
     duration = Duration.new(last - first)
 
-    durationFormat = if (duration.days > 0)
+    durationFormat = if (duration.total_days > 0)
                        '%td %~d'
                      elsif (duration.hours > 0)
                        '%h %~h'

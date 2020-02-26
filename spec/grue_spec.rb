@@ -31,7 +31,9 @@ RSpec.describe Grue do
   end
 
   it 'correctly prints durations' do
-    origin = Time.new(2017, 04, 06, 11, 17)
+    origin = Time.new(2017, 4, 6, 11, 17)
+    six_months_later = Time.new(2017, 10, 8, 12, 23)
+    two_years_later = Time.new(2019, 7, 28, 18, 36)
 
     offsets = [
         [origin + 1, '1 second'],
@@ -51,6 +53,9 @@ RSpec.describe Grue do
         [origin + 90001, '1 day'],
         [origin + 90061, '1 day'],
         [origin + 172800, '2 days'],
+        [origin + 172800, '2 days'],
+        [six_months_later, '185 days'],
+        [two_years_later, '843 days'],
     ]
 
     offsets.each{ |offset|
