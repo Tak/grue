@@ -95,10 +95,3 @@ module Grue
     end
   end # Grue
 end # Grue
-
-if (__FILE__ == $0)
-  require 'test/unit'
-
-  class GrueTest < Test::Unit::TestCase
-  end
-end
