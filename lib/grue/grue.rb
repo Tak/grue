@@ -75,7 +75,11 @@ module Grue
     # Load the url database from CACHE
     def load()
       begin
-        @urls = Psych.load_file(CACHE)
+        @urls = if Psych.respond_to?(:unsafe_load_file)
+                  Psych.unsafe_load_file(CACHE)
+                else
+                  Psych.load_file(CACHE)
+                end
         puts "Loaded cache from #{CACHE}"
       rescue => error
         puts "Error loading #{CACHE}: #{error.to_s}"
