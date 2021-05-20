@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'grue'
+require 'grue/grue-shortbus'
 
 Grue::GrueShortBus.new().run()

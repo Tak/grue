@@ -9,6 +9,7 @@
 # General Public License for more details.
 
 require 'shortbus'
+require_relative 'grue'
 
 # Regular expression to match an irc nick pattern (:nick[!user@host])
 # and capture the nick portion in \1

@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/Tak/fixedqueue
-  revision: d3574e561cec2a08c705d753c9249196bc803761
+  revision: 18f71b950d650a35abc9e3cd2e4136626c591e8b
   branch: trunk
   specs:
     fixedqueue (0.1.0)
 
 GIT
   remote: https://github.com/Tak/shortbus
-  revision: 8e3ca4dc806eca45793bddf528f0795e496982a9
+  revision: 97d73b2cfcf5003f1c999ebdbe9fb5205a17759c
   branch: trunk
   specs:
     shortbus (0.1.0)
@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/Tak/urika
-  revision: 8cadac9f42cae58522e247d459b901e53a18cb47
+  revision: 716aeb67368a8809726d8e1436c1bd6bb08fd6df
   branch: trunk
   specs:
     urika (0.1.0)
