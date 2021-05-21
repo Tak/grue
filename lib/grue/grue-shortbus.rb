@@ -99,7 +99,11 @@ module Grue
 
     # Dumps the url cache to disk
     def dump(words, words_eol, data)
-      @grue.dump()
+      begin
+        @grue.dump()
+      rescue => error
+        puts "Error dumping urls: #{error.to_s}"
+      end
     end # dump
 
     # Check for disconnect notice

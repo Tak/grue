@@ -94,14 +94,10 @@ module Grue
 
     # Dump the url database to CACHE
     def dump()
-      begin
-        File.open(CACHE, 'w') { |file|
-          file.write(Psych.dump(@urls))
-        }
-        puts "Successfully dumped urls to #{CACHE}"
-      rescue => error
-        puts "Error dumping urls: #{error.to_s}"
-      end
+      File.open(CACHE, 'w') { |file|
+        file.write(Psych.dump(@urls))
+      }
+      puts "Successfully dumped urls to #{CACHE}"
     end
   end # Grue
 end # Grue
